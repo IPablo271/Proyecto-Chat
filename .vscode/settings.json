@@ -51,6 +51,10 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "condition_variable": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "cstring": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp"
     }
 }
