@@ -18,7 +18,6 @@ void receive_messages(int client_socket) {
             break;
         }
         std::cout << buffer << std::endl;
-        send(client_socket, buffer, strlen(buffer), 0);
     }
     std::cout << "Se salio de bucle" << std::endl;
     close(client_socket);

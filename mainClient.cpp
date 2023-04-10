@@ -6,33 +6,43 @@
 #include <string.h>
 #include <thread>
 
-
 using namespace std;
-
 
 constexpr int PORT = 8888;
 
 // Esta función se ejecutará en un hilo separado para recibir mensajes del servidor
-void receive_messages(int client_socket) {
-    char buffer[1024];
-    while (true) {
+void receive_messages(int client_socket)
+{
+    char recv_buffer[1024 + 1]; // Agregar un espacio adicional para el carácter de terminación nula
+
+    while (true)
+    {
         // Limpiar el búfer antes de recibir un mensaje nuevo
-        memset(buffer, 0, sizeof(buffer));
+        memset(recv_buffer, 0, sizeof(recv_buffer));
+
         // Recibir el mensaje del servidor
-        int read_size = recv(client_socket, buffer, sizeof(buffer), 0);
+        int read_size = recv(client_socket, recv_buffer, sizeof(recv_buffer) - 1, 0); // Leer hasta un byte menos para dejar espacio para el carácter de terminación nula
+
         // Si no se pudo recibir ningún mensaje, salir del bucle
-        if (read_size <= 0) {
+        if (read_size <= 0)
+        {
             break;
         }
+
+        // Agregar el carácter de terminación nula al final del mensaje recibido
+        recv_buffer[read_size] = '\0';
+
         // Imprimir el mensaje recibido en la consola
-        std::cout << buffer << std::endl;
+        std::cout << recv_buffer << std::endl;
     }
 }
 
 // Método para chatear con todos los usuarios
-void broadcast(int client_socket, std::string username) {
+void broadcast(int client_socket, std::string username)
+{
 
-    cout << "Conectandote al chat con todos los usuarios..." << endl;
+    cout << "\n\nConectandote al chat con todos los usuarios...\n\n"
+         << endl;
 
     // Creamos el thread para recibir mensajes que nosotros enviamos:
 
@@ -46,7 +56,8 @@ void broadcast(int client_socket, std::string username) {
 
     char buffer[1024];
 
-    while (true) {
+    while (true)
+    {
 
         // Limpiar el búfer antes de enviar un mensaje nuevo
 
@@ -54,7 +65,7 @@ void broadcast(int client_socket, std::string username) {
 
         // Pedir al usuario que ingrese un mensaje
 
-        std::cout << "Mensaje: ";
+        // std::cout << "Mensaje: ";
         std::cin.getline(buffer, sizeof(buffer));
 
         // Concatenar el nombre de usuario con el mensaje ingresado por el usuario
@@ -64,50 +75,56 @@ void broadcast(int client_socket, std::string username) {
 
         int send_result = send(client_socket, message.c_str(), message.length(), 0);
 
-        if (send_result < 0) {
+        if (send_result < 0)
+        {
             std::cerr << "Error al enviar el mensaje" << std::endl;
             break;
         }
     }
 
     close(client_socket);
-
-
 }
 
 // Método para enviar y recibir mensajes directos
-void directMessages() {
+void directMessages()
+{
     // TODO: Implementar método
     cout << "Enviando y recibiendo mensajes directos..." << endl;
 }
 
 // Método para cambiar de status
-void changeStatus() {
+void changeStatus()
+{
     // TODO: Implementar método
     cout << "Cambiando de status..." << endl;
 }
 
 // Método para listar usuarios conectados
-void listUsers() {
+void listUsers()
+{
     // TODO: Implementar método
     cout << "Listando usuarios conectados..." << endl;
 }
 
 // Método para desplegar información de un usuario en particular
-void userInfo() {
+void userInfo()
+{
     // TODO: Implementar método
     cout << "Desplegando información de usuario en particular..." << endl;
 }
 
 // Método de ayuda
-void help() {
+void help()
+{
     // TODO: Implementar método
     cout << "Mostrando ayuda..." << endl;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
-    if (argc != 2) {
+    if (argc != 2)
+    {
         std::cerr << "Uso: " << argv[0] << " <nombre_de_usuario>" << std::endl;
         return 1;
     }
@@ -122,7 +139,8 @@ int main(int argc, char *argv[]) {
 
     // Verificamos que el socket se haya creado correctamente
 
-    if (client_socket == -1) {
+    if (client_socket == -1)
+    {
         std::cerr << "Error al crear el socket del cliente" << std::endl;
         return 1;
     }
@@ -145,22 +163,23 @@ int main(int argc, char *argv[]) {
 
     // Establecemos la conexión con el servidor
 
-    int conexion = connect(client_socket, (sockaddr *) &direccionSocketServidor, sizeof(direccionSocketServidor));
+    int conexion = connect(client_socket, (sockaddr *)&direccionSocketServidor, sizeof(direccionSocketServidor));
 
     // Verificamos que la conexión se haya establecido correctamente
 
-    if (conexion == -1) {
+    if (conexion == -1)
+    {
         std::cerr << "Error al establecer la conexión con el servidor" << std::endl;
         return 1;
     }
 
     std::cout << "Usuario conectado al servidor" << std::endl;
 
-
     int option;
     bool exit = false;
 
-    while (!exit) {
+    while (!exit)
+    {
         cout << "Menu de opciones:" << endl;
         cout << "1. Chatear con todos los usuarios (broadcasting)." << endl;
         cout << "2. Enviar y recibir mensajes directos, privados, aparte del chat general." << endl;
@@ -172,31 +191,34 @@ int main(int argc, char *argv[]) {
         cout << "Ingrese el numero de la opcion deseada: ";
         cin >> option;
 
-        switch (option) {
-            case 1:
-                broadcast(client_socket, username);
-                break;
-            case 2:
-                directMessages();
-                break;
-            case 3:
-                changeStatus();
-                break;
-            case 4:
-                listUsers();
-                break;
-            case 5:
-                userInfo();
-                break;
-            case 6:
-                help();
-                break;
-            case 7:
-                exit = true;
-                break;
-            default:
-                cout << "Opcion invalida." << endl;
-                break;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        switch (option)
+        {
+        case 1:
+            broadcast(client_socket, username);
+            break;
+        case 2:
+            directMessages();
+            break;
+        case 3:
+            changeStatus();
+            break;
+        case 4:
+            listUsers();
+            break;
+        case 5:
+            userInfo();
+            break;
+        case 6:
+            help();
+            break;
+        case 7:
+            exit = true;
+            break;
+        default:
+            cout << "Opcion invalida." << endl;
+            break;
         }
 
         cout << endl;
