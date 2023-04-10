@@ -10,7 +10,7 @@
 
 using namespace std;
 
-constexpr int PORT = 8888;
+constexpr int PORT = 9000;
 
 // Esta función se ejecutará en un hilo separado para recibir mensajes del servidor
 void receive_messages(int client_socket)

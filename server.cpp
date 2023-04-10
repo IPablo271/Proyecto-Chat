@@ -9,7 +9,7 @@
 #include <mutex>
 #include <algorithm>
 
-constexpr int PORT = 8888;
+constexpr int PORT = 9000;
 
 std::vector<int> clients;
 std::mutex clients_mutex;
