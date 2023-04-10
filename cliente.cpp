@@ -14,10 +14,14 @@ void receive_messages(int client_socket) {
         memset(buffer, 0, sizeof(buffer));
         int read_size = recv(client_socket, buffer, sizeof(buffer), 0);
         if (read_size <= 0) {
+            std::cerr << "Error al recibir el mensaje" << std::endl;
             break;
         }
         std::cout << buffer << std::endl;
+        send(client_socket, buffer, strlen(buffer), 0);
     }
+    std::cout << "Se salio de bucle" << std::endl;
+    close(client_socket);
 }
 
 int main(int argc, char *argv[]) {
