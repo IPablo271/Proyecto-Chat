@@ -33,8 +33,8 @@ void handle_client(int client_socket)
         {
             if (c != client_socket)
             { // no envía el mensaje de vuelta al cliente que lo envió
-                send(c, buffer, strlen(buffer), 0);
             }
+            send(c, buffer, strlen(buffer), 0);
         }
     }
 
